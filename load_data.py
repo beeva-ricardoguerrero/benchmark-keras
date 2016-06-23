@@ -1,13 +1,15 @@
-def load_images_as_np_4Dtensor(path2dataset, prefix, img_rows, img_cols, img_crop_rows, img_crop_cols, nclasses):
+import math as mt
+import os
+import numpy as np
+import cv2
+from random import shuffle
+from itertools import cycle, islice
+
+def load_img_as_4Dtensor(path2dataset, prefix, img_rows, img_cols, img_crop_rows, img_crop_cols):
     """
 
     :return:
     """
-
-    import math as mt
-    import os
-    import numpy as np
-    import cv2
 
     x_ls = []
     y_ls = []
@@ -53,3 +55,62 @@ def load_images_as_np_4Dtensor(path2dataset, prefix, img_rows, img_cols, img_cro
     y_np = np.array(y_ls)
 
     return x_np, y_np
+
+
+
+class minibatch_4Dtensor_generator(object):
+    """
+    generator: a generator.
+            The output of the generator must be either
+            - a tuple (inputs, targets)
+            - a tuple (inputs, targets, sample_weights).
+            All arrays should contain the same number of samples.
+            The generator is expected to loop over its data
+            indefinitely. An epoch finishes when `samples_per_epoch`
+            samples have been seen by the model.
+    """
+
+    def __init__(self, path2dataset, prefix, img_rows, img_cols, img_crop_rows, img_crop_cols, batch_size):
+
+        self.prefix = prefix
+        self.img_rows = img_rows
+        self.img_cols = img_cols
+        self.img_crop_rows = img_crop_rows
+        self.img_crop_cols = img_crop_cols
+        self.batch_size = batch_size
+        self.position = 0
+        self.original_paths = []
+
+        with open(path2dataset, "rb") as fin:
+            for line in fin:
+                self.original_paths.append(line.strip())
+
+        self.iter = cycle(self.original_paths)
+
+    def __iter__(self):
+
+        while True:
+
+            # Get a slice of the whole paths
+            current_paths = islice(self.iter, self.batch_size)
+
+            self.position += self.batch_size
+
+            # Every epoch we need to randomize the images' order to prevent the net from learning specific sequences
+            if self.position > len(self.original_paths):
+                shuffle(self.original_paths)
+                self.position = 0
+
+            # Load
+            X = []
+            Y = []
+
+            for line in current_paths:
+                path, label = line.strip().split()
+
+                image = np.load(self.prefix + path) #  Already resized and cropped
+                X.append(image)
+                Y.append(int(label))
+
+            # Now we have a list with the images corresponding to a minibatch
+            yield (X, Y)
