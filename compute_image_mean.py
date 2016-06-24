@@ -1,3 +1,7 @@
+from itertools import islice
+import numpy as np
+import glob.glob
+
 def compute_image_mean(in_array):
     """
     It behaves exactly as Caffe's compute_image_mean.cpp
@@ -32,3 +36,37 @@ def compute_image_mean(in_array):
         mean['R'] = res[2, :, :]
 
         return mean
+
+def compute_image_mean_low_mem(path, ext, shape):
+    """
+    This version of the function, does not need to load the whole dataset in memory, hence it can work with
+    huge datasets.
+
+    Remember that images loaded with OpenCV (intended case) are BGR-ordered.
+
+    Expected shape: (row, cols, channels)
+    """
+
+    path2images = glob.glob(path + "*" + ext)
+    num_images = len(path2images)
+    accumulator = np.zeros((shape), np.int32)
+
+    for num, path in enumerate(path2images):
+        img = np.load(path)
+        accumulator += img
+
+        if num % 100 == 0 and num != 0:
+            print("Processed 100 more images.. (%d/%d)\n" % (num, num_images))
+
+    print ("Finish loading images... almost done\n")
+
+    mean_img = accumulator.astype(np.float64)/num_images # Must convert the first operand to float
+
+    mean = dict()
+
+    mean['B'] = mean_img[:, :, 0]
+    mean['G'] = mean_img[:, :, 1]
+    mean['R'] = mean_img[:, :, 2]
+
+    return mean
+

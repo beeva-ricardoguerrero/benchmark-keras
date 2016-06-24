@@ -108,9 +108,13 @@ class minibatch_4Dtensor_generator(object):
             for line in current_paths:
                 path, label = line.strip().split()
 
-                image = np.load(self.prefix + path) #  Already resized and cropped
-                X.append(image)
-                Y.append(int(label))
+                try:  # 100% sure that is not needed, but I don't want incidentals in a multiple days experiment
+                    image = np.load(self.prefix + path) #  Already resized and cropped
 
-            # Now we have a list with the images corresponding to a minibatch
-            yield (X, Y)
+                    X.append(image)
+                    Y.append(int(label))
+                except:
+                    pass
+
+            # Now we have a list with the images corresponding to a minibatch, return the 4D tensor
+            yield (np.array(X), np.array(Y))
