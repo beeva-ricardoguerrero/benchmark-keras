@@ -72,6 +72,7 @@ def preprocess_images(path2dataset_orig, prefix_orig, path2dataset_dest, prefix_
 def preprocess_images_worker(line, prefix_orig, prefix_dest, img_rows, img_cols, img_crop_rows, img_crop_cols):
     """
     Meant to be called by preprocess_images_multiprocess
+    Nested functions (to avoid parameters copy) can not be parallelizable, hence, this function is defined here
     """
 
     path, label = line.strip().split()
@@ -106,8 +107,6 @@ def preprocess_images_worker(line, prefix_orig, prefix_dest, img_rows, img_cols,
     else:
         print("There is no image in %s" % path)
         return ""
-
-
 
 
 def preprocess_images_multiprocess(path2dataset_orig, prefix_orig, path2dataset_dest, prefix_dest, img_rows, img_cols, img_crop_rows, img_crop_cols):

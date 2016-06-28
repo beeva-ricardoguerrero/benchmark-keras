@@ -74,12 +74,11 @@ print(" Training finished. Results: \n")
 print(hist.history)
 
 # Predict on validation set
-#score = model.evaluate(X_val, Y_val, verbose=0) # TODO
-#print('Val loss: ', score[0])
-#print('Val accuracy: ', score[1])
+####
 
 Y_pred_ls = []
 Y_val_ls = []
+
 for X_val, Y_val in validation_images_generator:
     Y_pred_ls.append(model.predict_classes(X_val, batch_size=batch_size, verbose=0))
     Y_val_ls.append(Y_val)
