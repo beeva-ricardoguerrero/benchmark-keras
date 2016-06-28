@@ -145,6 +145,9 @@ class minibatch_4Dtensor_generator(object):
             # Pre process
             print ("Pre-processing...\n")
 
+            X = np.array(X)
+            Y = np.array(Y)
+
             X = X.astype('float32')
 
             X[:, 0, :, :] -= self.mean['B']
