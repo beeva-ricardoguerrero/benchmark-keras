@@ -1,6 +1,6 @@
 from itertools import islice
 import numpy as np
-import glob.glob
+import pickle
 
 def compute_image_mean(in_array):
     """
@@ -37,7 +37,7 @@ def compute_image_mean(in_array):
 
         return mean
 
-def compute_image_mean_low_mem(path, ext, shape):
+def compute_image_mean_low_mem(path2dataset, prefix, shape):
     """
     This version of the function, does not need to load the whole dataset in memory, hence it can work with
     huge datasets.
@@ -47,20 +47,23 @@ def compute_image_mean_low_mem(path, ext, shape):
     Expected shape: (row, cols, channels)
     """
 
-    path2images = glob.glob(path + "*" + ext)
+    with open(path2dataset, 'rb') as fin:
+        path2images = fin.readlines()
+
     num_images = len(path2images)
-    accumulator = np.zeros((shape), np.int32)
+    accumulator = np.zeros(shape, np.int32)
 
     for num, path in enumerate(path2images):
-        img = np.load(path)
+        path, _ = path.strip().split()
+        img = np.load(prefix + path)
         accumulator += img
 
         if num % 100 == 0 and num != 0:
-            print("Processed 100 more images.. (%d/%d)\n" % (num, num_images))
+            print("Processed 100 more images.. (%d/%d)" % (num, num_images))
 
     print ("Finish loading images... almost done\n")
 
-    mean_img = accumulator.astype(np.float64)/num_images # Must convert the first operand to float
+    mean_img = accumulator.astype(np.float64)/num_images  # Must convert the first operand to float
 
     mean = dict()
 
@@ -70,3 +73,14 @@ def compute_image_mean_low_mem(path, ext, shape):
 
     return mean
 
+
+if __name__ == "__main__":
+    path2dataset = r"/home/ubuntu/scripts/Keras_imagenet/splits/train3_npy.txt"
+    prefix = r"/mnt2/img_npy/"
+    path2mean = r"/mnt2/img_npy/mean.pkl"
+    shape = (227, 227, 3)
+
+    mean = compute_image_mean_low_mem(path2dataset, prefix, shape)
+
+    with open(path2mean, 'wb') as fout:
+        pickle.dump(mean, fout)
