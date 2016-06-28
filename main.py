@@ -14,6 +14,19 @@ from load_data import minibatch_4Dtensor_generator
 
 from keras.optimizers import SGD
 from keras.callbacks import ModelCheckpoint
+import numpy as np
+
+
+def accuracy(predictions, labels):
+    """
+    Expected parameters (just format)
+
+    predictions = [np.array(3), np.array(4), np.array(5)] -> list of np.array
+    labels = [np.array([0,0,0,1,0]), np.array([0,0,0,0,1]), np.array([0,0,0,0,1])]  -> list of hot-encoded np.array
+    """
+    return (100.0 * np.sum(np.squeeze(np.array(predictions)) == np.argmax(labels, 1))
+          / np.array(predictions).shape[0])
+
 
 path2train = r"/home/ubuntu/scripts/Keras_imagenet/splits/train3.txt"
 path2val = r"/home/ubuntu/scripts/Keras_imagenet/splits/val3.txt"
@@ -64,6 +77,15 @@ print(hist.history)
 #score = model.evaluate(X_val, Y_val, verbose=0) # TODO
 #print('Val loss: ', score[0])
 #print('Val accuracy: ', score[1])
+
+Y_pred_ls = []
+Y_val_ls = []
+for X_val, Y_val in validation_images_generator:
+    Y_pred_ls.append(model.predict_classes(X_val, batch_size=batch_size, verbose=0))
+    Y_val_ls.append(Y_val)
+
+acc = accuracy(Y_pred_ls, Y_val_ls)
+print('Val accuracy: ', acc)
 
 # Save the model
 ####
