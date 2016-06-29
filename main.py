@@ -19,7 +19,7 @@ import numpy as np
 
 def accuracy(predictions, labels):
     """
-    Expected parameters (just format)
+    Expected parameters (just the format)
 
     predictions = [np.array(3), np.array(4), np.array(5)] -> list of np.array
     labels = [np.array([0,0,0,1,0]), np.array([0,0,0,0,1]), np.array([0,0,0,0,1])]  -> list of hot-encoded np.array
@@ -28,9 +28,9 @@ def accuracy(predictions, labels):
           / np.array(predictions).shape[0])
 
 
-path2train = r"/home/ubuntu/scripts/Keras_imagenet/splits/train3.txt"
-path2val = r"/home/ubuntu/scripts/Keras_imagenet/splits/val3.txt"
-prefix = r"/mnt/img/"
+path2train = r"/home/ubuntu/scripts/Keras_imagenet/splits/train3_npy.txt"
+path2val = r"/home/ubuntu/scripts/Keras_imagenet/splits/val3_npy.txt"
+prefix = r"/mnt2/img_npy/"
 path2architecture = r"/home/ubuntu/scripts/Keras_imagenet/model_architecture.json"
 path2weights = r"/home/ubuntu/scripts/Keras_imagenet/model_weights.h5"
 path2mean = r"/mnt2/img_npy/mean.pkl"
@@ -52,7 +52,6 @@ training_images_generator = minibatch_4Dtensor_generator(path2train, path2mean, 
 # Create generator from validation data
 validation_images_generator = minibatch_4Dtensor_generator(path2val, path2mean, prefix, img_rows, img_cols, img_crop_rows, img_crop_cols, batch_size, infinite=False)
 
-
 # Build model
 ####
 model = CaffeNet.get_Caffenet()
@@ -69,7 +68,7 @@ model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy
 print("Start training ...\n")
 custom_lr_scheduler = CaffeNet.Caffenet_lr_decay()
 model_saver = ModelCheckpoint(filepath="weights.{epoch:02d}.hdf5", monitor='train_loss')
-hist = model.fit_generator(training_images_generator, samples_per_epoch, nb_epoch=epochs, verbose=1, callbacks=[custom_lr_scheduler. model_saver])
+hist = model.fit_generator(training_images_generator, samples_per_epoch, nb_epoch=epochs, verbose=1, callbacks=[custom_lr_scheduler, model_saver])
 print(" Training finished. Results: \n")
 print(hist.history)
 

@@ -102,12 +102,15 @@ class minibatch_4Dtensor_generator(object):
         self.iter = cycle(self.original_paths)
 
     def __iter__(self):
+        return self
 
-        while True:
+    def next(self):
+        while not self.end_reached:
 
             if self.infinite:
                 # Get a slice of the whole paths
-                current_paths = islice(self.iter, self.batch_size)
+                generator = islice(self.iter, self.batch_size)  # Finite generator of self.batch_size elements
+                current_paths = [elem for elem in generator]
 
                 self.position += self.batch_size
 
@@ -134,7 +137,6 @@ class minibatch_4Dtensor_generator(object):
 
                 try:  # 100% sure that is not needed, but I don't want incidentals in a multiple days experiment
                     image = np.load(self.prefix + path)  # Already resized and cropped
-
                     X.append(image)
                     Y.append(int(label))
                 except (IOError, ValueError):
@@ -148,13 +150,12 @@ class minibatch_4Dtensor_generator(object):
             X = np.array(X)
             Y = np.array(Y)
 
+            X = X.reshape(X.shape[0], X.shape[3], self.img_crop_rows, self.img_crop_cols)
             X = X.astype('float32')
 
             X[:, 0, :, :] -= self.mean['B']
             X[:, 1, :, :] -= self.mean['G']
             X[:, 2, :, :] -= self.mean['R']
-
-            X = X.reshape(X.shape[0], X.shape[3], self.img_crop_rows, self.img_crop_cols)
 
             print('X_train shape:', X.shape)
             print(X.shape[0], 'train samples')
@@ -164,8 +165,7 @@ class minibatch_4Dtensor_generator(object):
 
             ####
 
-            # Now we have a list with the images corresponding to a minibatch, return the 4D tensor
-            yield (np.array(X), np.array(Y))
+            return (X, Y)
 
-            if self.end_reached:
-                break
+            #if self.end_reached:
+        raise StopIteration
