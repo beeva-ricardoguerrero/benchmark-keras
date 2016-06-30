@@ -135,7 +135,7 @@ if __name__ == "__main__":
     print("Pre-processing training set")
     path2dataset_orig = r"/home/ubuntu/scripts/Keras_imagenet/splits/train3.txt"
     prefix_orig = r"/mnt/img/"
-    path2dataset_dest = r"/home/ubuntu/scripts/Keras_imagenet/splits/train3_npy.txt"
+    path2dataset_dest = r"/mnt2/train3_npy.txt"
     prefix_dest = r"/mnt2/img_npy/"
     img_rows = 256
     img_cols = 256
@@ -147,7 +147,7 @@ if __name__ == "__main__":
 
     print("Pre-processing validation set")
     path2dataset_orig = r"/home/ubuntu/scripts/Keras_imagenet/splits/val3.txt"
-    path2dataset_dest = r"/home/ubuntu/scripts/Keras_imagenet/splits/val3_npy.txt"
+    path2dataset_dest = r"/mnt2/val3_npy.txt"
 
     preprocess_images(path2dataset_orig, prefix_orig, path2dataset_dest, prefix_dest, img_rows, img_cols, img_crop_rows,
                       img_crop_cols)  # or preprocess_images_multiprocess

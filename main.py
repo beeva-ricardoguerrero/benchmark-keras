@@ -72,8 +72,22 @@ hist = model.fit_generator(training_images_generator, samples_per_epoch, nb_epoc
 print(" Training finished. Results: \n")
 print(hist.history)
 
+
+# Save the model
+####
+
+# Save architecture
+json_string = model.to_json()
+#open(path2architecture, 'w').write(json_string)
+
+# Save learnt weights
+#model.save_weights(path2weights)
+
+
 # Predict on validation set
 ####
+
+print ("Computing validation accuracy...\n")
 
 Y_pred_ls = []
 Y_val_ls = []
@@ -85,12 +99,4 @@ for X_val, Y_val in validation_images_generator:
 acc = accuracy(Y_pred_ls, Y_val_ls)
 print('Val accuracy: ', acc)
 
-# Save the model
-####
 
-# Save architecture
-json_string = model.to_json()
-open(path2architecture, 'w').write(json_string)
-
-# Save learnt weights
-model.save_weights(path2weights)

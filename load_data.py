@@ -94,7 +94,8 @@ class minibatch_4Dtensor_generator(object):
 
         with open(path2dataset, "rb") as fin:
             for line in fin:
-                self.original_paths.append(line.strip())
+                if line.strip():
+                    self.original_paths.append(line.strip())
 
         with open(path2mean, "rb") as fin:
             self.mean = pickle.load(fin)
@@ -167,5 +168,4 @@ class minibatch_4Dtensor_generator(object):
 
             return (X, Y)
 
-            #if self.end_reached:
-        raise StopIteration
+        raise StopIteration # The docs says it is not necessary, but if it's not included, it explodes, so..
