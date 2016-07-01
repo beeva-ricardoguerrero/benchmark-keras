@@ -131,10 +131,10 @@ class minibatch_4Dtensor_generator(object):
             X = []
             Y = []
 
-            print("Loading data...\n")
+            print("\nLoading data...\n")
 
             for line in current_paths:
-                path, label = line.strip().split()
+                path, label = line.split()
 
                 try:  # 100% sure that is not needed, but I don't want incidentals in a multiple days experiment
                     image = np.load(self.prefix + path)  # Already resized and cropped
