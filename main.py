@@ -40,7 +40,7 @@ img_crop_rows = 227
 img_crop_cols = 227
 nb_classes = 1000
 batch_size = 256
-epochs = 36  # Max_iter in Caffe is set to 10K iterations, batch_size is 256 and there are 702.135 images, hence we are running the experiment 36.46 epochs -> 36
+epochs = 36  # Max_iter in Caffe is set to 100.000 iterations, batch_size is 256 and there are 702.135 images, hence we are running the experiment 36.46 epochs -> 36
 samples_per_epoch = 702135  # integer, number of samples to process before going to the next epoch.
 
 # Prepare dataset
@@ -78,10 +78,10 @@ print(hist.history)
 
 # Save architecture
 json_string = model.to_json()
-#open(path2architecture, 'w').write(json_string)
+open(path2architecture, 'w').write(json_string)
 
 # Save learnt weights
-#model.save_weights(path2weights)
+model.save_weights(path2weights)
 
 
 # Predict on validation set
