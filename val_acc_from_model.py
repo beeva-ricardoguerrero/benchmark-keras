@@ -32,7 +32,6 @@ epochs = 36  # Max_iter in Caffe is set to 100.000 iterations, batch_size is 256
 samples_per_epoch = 702135  # integer, number of samples to process before going to the next epoch.
 
 
-
 # Create generator from validation data
 validation_images_generator = minibatch_4Dtensor_generator(path2val, path2mean, prefix, img_rows, img_cols, img_crop_rows, img_crop_cols, batch_size, infinite=False)
 

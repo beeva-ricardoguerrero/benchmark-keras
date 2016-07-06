@@ -123,6 +123,7 @@ class minibatch_4Dtensor_generator(object):
                 offset = self.position + self.batch_size
                 if offset < len(self.original_paths):
                     current_paths = self.original_paths[self.position:offset]
+                    self.position += self.batch_size
                 else:
                     current_paths = self.original_paths[self.position:]
                     self.end_reached = True
@@ -131,7 +132,7 @@ class minibatch_4Dtensor_generator(object):
             X = []
             Y = []
 
-            print("\nLoading data...\n")
+            print("\nLoading data...")
 
             for line in current_paths:
                 path, label = line.split()
@@ -143,7 +144,7 @@ class minibatch_4Dtensor_generator(object):
                 except (IOError, ValueError):
                     pass
 
-            print("Finish loading data...\n")
+            print("Finish loading data...")
 
             # Pre process
             print ("Pre-processing...\n")
