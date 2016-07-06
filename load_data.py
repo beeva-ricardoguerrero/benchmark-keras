@@ -97,6 +97,8 @@ class minibatch_4Dtensor_generator(object):
                 if line.strip():
                     self.original_paths.append(line.strip())
 
+        self.total_paths = len(self.original_paths)
+
         with open(path2mean, "rb") as fin:
             self.mean = pickle.load(fin)
 
@@ -116,7 +118,7 @@ class minibatch_4Dtensor_generator(object):
                 self.position += self.batch_size
 
                 # Every epoch we need to randomize the images' order to prevent the net from learning specific sequences
-                if self.position > len(self.original_paths):
+                if self.position > self.total_paths:
                     shuffle(self.original_paths)
                     self.position = 0
             else:
@@ -133,6 +135,9 @@ class minibatch_4Dtensor_generator(object):
             Y = []
 
             print("\nLoading data...")
+
+            if not self.infinite:
+                print("Progress: %d / %d" % (offset, self.total_paths))
 
             for line in current_paths:
                 path, label = line.split()
@@ -159,8 +164,7 @@ class minibatch_4Dtensor_generator(object):
             X[:, 1, :, :] -= self.mean['G']
             X[:, 2, :, :] -= self.mean['R']
 
-            print('X shape:', X.shape)
-            print(X.shape[0], 'samples')
+            print('Mini batch shape:', X.shape)
 
             # convert class vectors to binary class matrices
             Y = np_utils.to_categorical(Y, self.nb_classes)

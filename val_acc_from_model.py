@@ -1,5 +1,7 @@
+# How to execute:
+# THEANO_FLAGS=device=gpu,floatX=float32 python val_acc_from_model.py
+
 from load_data import minibatch_4Dtensor_generator
-from keras.models import model_from_json
 from keras.optimizers import SGD
 import CaffeNet
 import numpy as np
