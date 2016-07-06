@@ -158,8 +158,8 @@ class minibatch_4Dtensor_generator(object):
             X[:, 1, :, :] -= self.mean['G']
             X[:, 2, :, :] -= self.mean['R']
 
-            print('X_train shape:', X.shape)
-            print(X.shape[0], 'train samples')
+            print('X shape:', X.shape)
+            print(X.shape[0], 'samples')
 
             # convert class vectors to binary class matrices
             Y = np_utils.to_categorical(Y, self.nb_classes)

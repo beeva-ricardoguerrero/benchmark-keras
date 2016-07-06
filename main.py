@@ -67,7 +67,7 @@ model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy
 
 print("Start training ...\n")
 custom_lr_scheduler = CaffeNet.Caffenet_lr_decay()
-model_saver = ModelCheckpoint(filepath="weights.{epoch:02d}.hdf5", monitor='train_loss')
+model_saver = ModelCheckpoint(filepath="weights.{epoch:02d}.h5", monitor='train_loss')
 hist = model.fit_generator(training_images_generator, samples_per_epoch, nb_epoch=epochs, verbose=1, callbacks=[custom_lr_scheduler, model_saver])
 print(" Training finished. Results: \n")
 print(hist.history)
