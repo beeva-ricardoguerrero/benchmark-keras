@@ -11,10 +11,10 @@ def accuracy(predictions, labels):
     """
     Expected parameters (just the format)
 
-    predictions = [np.array(3), np.array(4), np.array(5)] -> list of np.array
+    predictions = [3, 4, 7] -> list of int
     labels = [np.array([0,0,0,1,0]), np.array([0,0,0,0,1]), np.array([0,0,0,0,1])]  -> list of hot-encoded np.array
     """
-    return (100.0 * np.sum(np.squeeze(np.array(predictions)) == np.argmax(labels, 1))
+    return (100.0 * np.sum(np.array(predictions) == np.argmax(labels, 1))
           / np.array(predictions).shape[0])
 
 
@@ -22,7 +22,7 @@ path2train = r"/home/ubuntu/scripts/Keras_imagenet/splits/train3_npy.txt"
 path2val = r"/home/ubuntu/scripts/Keras_imagenet/splits/val3_npy.txt"
 prefix = r"/mnt2/img_npy/"
 path2architecture = r"/home/ubuntu/scripts/Keras_imagenet/model_architecture.json"
-path2weights = r"/home/ubuntu/scripts/Keras_imagenet/weights.10.hdf5"
+path2weights = r"/home/ubuntu/scripts/Keras_imagenet/weights.10.h5"
 path2mean = r"/mnt2/img_npy/mean.pkl"
 img_rows = 256
 img_cols = 256
@@ -58,5 +58,8 @@ for X_val, Y_val in validation_images_generator:
     Y_pred_ls.append(model.predict_classes(X_val, batch_size=batch_size, verbose=0))
     Y_val_ls.append(Y_val)
 
-acc = accuracy(Y_pred_ls, Y_val_ls)
+predictions = [item for sublist in Y_pred_ls for item in sublist]  # Flat a list of lists
+labels = [item for sublist in Y_val_ls for item in sublist]
+
+acc = accuracy(predictions, labels)
 print('Val accuracy: ', acc)

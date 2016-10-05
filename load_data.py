@@ -154,10 +154,11 @@ class minibatch_4Dtensor_generator(object):
             # Pre process
             print ("Pre-processing...\n")
 
+            # TODO pre-allocating a np.array and get rid of append and lists, will greatly reduce the computation time
             X = np.array(X)
             Y = np.array(Y)
 
-            X = X.reshape(X.shape[0], X.shape[3], self.img_crop_rows, self.img_crop_cols)
+            X = X.reshape(X.shape[0], X.shape[3], self.img_crop_rows, self.img_crop_cols) # Final shape: (n samples, channels, width, height)
             X = X.astype('float32')
 
             X[:, 0, :, :] -= self.mean['B']
